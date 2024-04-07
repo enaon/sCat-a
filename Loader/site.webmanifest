@@ -1,0 +1,22 @@
+{
+    "name": "eucWatch",
+    "short_name": "eucWatch",
+    "description": "eucWatch Loader",
+    "icons": [
+        {
+            "src": "img/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "img/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#332F2E",
+    "background_color": "#332F2E",
+    "display": "standalone",
+    "start_url": "https://enaon.github.io/eucWatch",
+    "scope": "https://enaon.github.io/eucWatch"
+}
