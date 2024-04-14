@@ -1,0 +1,54 @@
+[
+	{ "id": "init",
+		"name": "init",
+		"icon": "../icon.png",
+		"version":"1.00",
+		"description": "init and watchdog. ",
+		"tags": "core",
+		"type":"core",
+	    "needsFeatures":["dsd6"],
+		"storage": [
+			{"name":".bootrst","url":"../init.js"}
+		]
+	},
+	{ "id": "handler",
+		"name": "Handler",
+		"icon": "../icon.png",
+		"version":"1.00",
+		"description": "handlers ",
+		"tags": "core",
+	    "needsFeatures":["dsd6"],
+		"storage": [
+			{"name":"handler","url":"../handler.js"},
+			{"name":"handler_btn","url":"../handler_btn.js"},
+			{"name":"handler_cron","url":"../handler_cron.js"},
+			{"name":"handler_acc","url":"../handler_acc.js"},
+			{"name":"handler_charge","url":"../handler_charge.js"},
+			{"name":"handler_set","url":"../handler_set.js"}
+		]
+	},  
+	{ "id": "display",
+		"name": "display",
+		"icon": "../icon.png",
+		"version":"1.00",
+		"description": "oled driver.",
+		"tags": "core",
+		"type":"core",
+	    "needsFeatures":["dsd6"],
+		"storage": [
+		{"name":"sysOled","url":"../oled.js"}
+		]
+	},
+	{ "id": "main",
+		"name": "main",
+		"icon": "../icon.png",
+		"version":"1.94.2",
+		"description": "sCat-a main app",
+		"tags": "tools",
+	    "needsFeatures":["dsd6"],
+		"storage": [
+			{"name":"scata","url":"../main.js"}
+		]
+	}
+
+]

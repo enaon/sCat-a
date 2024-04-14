@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../Loader/css/spectre.min.css">
+  </head>
+  <body>
+
+    <p><button id="upload" class="btn btn-primary">Upload</button></p>
+	<h6>This proccess will erase the DSD6</h6>
+	<h7></h7>
+	<h7>Press the upload button, connect to the D6D6 when prompted,</h7>
+	<h7>if not allready connected,</h7>
+	<h7>and wait for the files to upload.</h7>
+	<h6></h6>
+	<h6>Press the "Disconnect" button when then last file has finished uploading to start using the automated cat toilet.</h6>
+
+    <script src="../Loader/core/lib/customize.js"></script>
+    <script>
+      // When the 'upload' button is clicked...
+      document.getElementById("upload").addEventListener("click", function() {
+        var app = `{name:"eucLight"} `;
+		window.postMessage(app);
+      });
+
+    </script>
+  </body>
+</html>

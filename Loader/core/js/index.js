@@ -3,7 +3,7 @@ let appSortInfo = {}; // list of data to sort by, from appdates.csv { created, m
 let files = []; // list of files on the Espruimo Device
 let DEFAULTSETTINGS = {
   pretokenise : true,
-  favourites : ["boot","launch","setting"]
+  favourites : ["init","oled","handler"]
 };
 let SETTINGS = JSON.parse(JSON.stringify(DEFAULTSETTINGS)); // clone
 saveSettings(); //eucwatch- default pretokenise 
@@ -949,15 +949,14 @@ if (btn) btn.addEventListener("click",event=>{
 btn = document.getElementById("installall");
 if (btn) btn.addEventListener("click",event=>{ 
     let installSet="ALL"
-    if (device.id=="P8"||device.id=="P22"||device.id=="PINETIME") installSet="P8"
-    else if (device.id=="MAGIC3"||device.id=="ROCK"||device.id=="BANGLEJS2") installSet="Rock"
+    if (device.id=="MAGIC3") installSet="Magic"
     else if (device.id=="DSD6") installSet="DSD6"
-    else if (device.id=="EUCLIGHT") installSet="eucLight"
 
     else { 
-          Progress.hide({sticky:true});
-          showToast("PLEASE CONNECT TO THE WATCH","error");
-        return;
+          installSet="DSD6"
+          //Progress.hide({sticky:true});
+          //showToast("PLEASE CONNECT TO THE WATCH","error");
+        //return;
     }
     installerOptions(installSet).then(() => {
     }).catch(err=>{
