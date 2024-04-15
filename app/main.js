@@ -254,7 +254,15 @@ scata = {
     nonstick_4: () => { scata.call.go({ one: 1.7 + scata.state.def.is.clb, two: 1.6, three: 1.7, act: "Step 4", act2: "Returning", next: "nonstick_5", speed: 110 }); },
     nonstick_5: () => { scata.call.go({ one: 2 + scata.state.def.is.clb, two: 0, three: 0.65, act: "Emptying", act2: "Returning", next: "lock", speed: 100 }); },
     // light crystalic silicone sand
-    silicone: () => { scata.call.go({ one: 1.6 + scata.state.def.is.clb, two: 0.6 + scata.state.def.is.clb, act: "Getting ready", next: "silicone1", speed: 100 }); },
+    silicone: () => { scata.call.go({ one: 1 + scata.state.def.is.clb, two: 0, three: 1.2, act: "Preparing", next: "silicone1", speed: 80 }); },
+    silicone1: () => { scata.call.go({ one: 1.4 + scata.state.def.is.clb, two: 1.3, three: 1.4, act: "Step 1", act2: "Returning", next: "silicone2", speed: 110 }); },
+    silicone2: () => { scata.call.go({ one: 1.5 + scata.state.def.is.clb, two: 1.4, three: 1.5, act: "Step 2", act2: "Returning", next: "silicone3", speed: 110 }); },
+    silicone3: () => { scata.call.go({ one: 1.6 + scata.state.def.is.clb, two: 1.5, three: 1.6, act: "Step 3", act2: "Returning", next: "silicone4", speed: 110 }); },
+    silicone4: () => { scata.call.go({ one: 1.7 + scata.state.def.is.clb, two: 1.6, three: 1.7, act: "Step 4", act2: "Returning", next: "silicone5", speed: 110 }); },
+    silicone5: () => { scata.call.go({ one: 2 + scata.state.def.is.clb, two: 0, three: 0.65, act: "step5", act2: "Returning", next: "silicone6", speed: 100 }); },
+    silicone6: () => { scata.call.go({ one: 1 + scata.state.def.is.clb, two: 0, three: 0.65, act: "Emptying", act2: "Returning", next: "lock", speed: 100 }); },
+
+  /*  silicone: () => { scata.call.go({ one: 1.6 + scata.state.def.is.clb, two: 0.6 + scata.state.def.is.clb, act: "Getting ready", next: "silicone1", speed: 100 }); },
     silicone1: () => { scata.call.go({ one: 2 + scata.state.def.is.clb, two: 1.9 + scata.state.def.is.clb, act: "Emptying", next: "silicone_return", speed: 150 }); },
     silicone_return: () => { scata.call.go({ one: 2 + scata.state.def.is.clb, two: 0, act: "Returning", next: "silicone_return1", speed: 100 }); },
     silicone_return1: () => { scata.call.go({ one: 0.1, two: 0, act: "Leveling", next: "silicone_return2", speed: 80 }); },
@@ -262,6 +270,8 @@ scata = {
     silicone_return3: () => { scata.call.go({ one: 0.1, two: 0, act: "Leveling", next: "silicone_return4", speed: 50 }); },
     silicone_return4: () => { scata.call.go({ one: 0.1, two: 0, act: "Leveling", next: "silicone_return5", speed: 80 }); },
     silicone_return5: () => { scata.call.go({ one: 0.8, two: 0.65, act: "Leveling", next: "lock", speed: 100 }); },
+*/
+
     // empty sand
     empty: () => { scata.call.go({ one: 2 + scata.state.def.is.clb, two: 0.65, act: "Emptying Sand", next: "empty1" }); },
     empty1: () => { scata.call.go({ one: 2 + scata.state.def.is.clb, two: 0.65, act: "Take 2", next: "empty2", speed: 50 }); },

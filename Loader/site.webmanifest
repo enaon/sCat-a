@@ -1,7 +1,7 @@
 {
-    "name": "eucWatch",
-    "short_name": "eucWatch",
-    "description": "eucWatch Loader",
+    "name": "sCat-a",
+    "short_name": "sCat-a",
+    "description": "sCat-a Loader",
     "icons": [
         {
             "src": "img/android-chrome-192x192.png",
@@ -17,6 +17,6 @@
     "theme_color": "#332F2E",
     "background_color": "#332F2E",
     "display": "standalone",
-    "start_url": "https://enaon.github.io/eucWatch",
-    "scope": "https://enaon.github.io/eucWatch"
+    "start_url": "https://enaon.github.io/sCat-a",
+    "scope": "https://enaon.github.io/sCat-a"
 }
