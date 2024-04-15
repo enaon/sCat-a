@@ -17,6 +17,6 @@
     "theme_color": "#332F2E",
     "background_color": "#332F2E",
     "display": "standalone",
-    "start_url": "https://enaon.github.io/sCat-a",
+    "start_url": "https://enaon.github.io/sCat-a/scata.html",
     "scope": "https://enaon.github.io/sCat-a"
 }
