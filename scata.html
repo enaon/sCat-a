@@ -1,238 +1,167 @@
-<html>
- <head>
-  <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>sCat-a</title>
- </head>
-  <body style="width:device-width;height:800px">
-  <link rel="manifest" href="Loader/site.webmanifest">
-  <link href="tinydash.css" rel="stylesheet">
-  <script src="tinydash.js"></script>
-  <script>
-  //<body style="width:420px;height:800px">
-  //<meta name="viewport" content="width=420, initial-scale=1">
-  var connection={char:{}};
-  var myService = 0xffa0; // fill in a service you're looking for here
-  var myCharacteristic = 0xffa1; // fill in a characteristic from the service here
-  function connect() {
-    elements.modal.remove();
-    navigator.bluetooth.requestDevice({ 
-        filters: [{ namePrefix: 'eL-'} ],
-        optionalServices: [myService],
-        acceptAllDevices: false
-    })
-    .then(device => {
-      //console.log("found :"+device.name);
-      elements.status.setValue(`CONNECTING`);
-      elements.log.log(`found ${device.name}`);
-      device.addEventListener('gattserverdisconnected', onDisconnected);
-      return device.gatt.connect();
-    })
-    .then(server => server.getPrimaryService(myService))
-    .then(service => service.getCharacteristics())
-    .then(characteristic => { for (c in characteristic) {connection.char[c]=characteristic[c];} })
-    .then(_ => connection.char[0].startNotifications())
-    .then(subscribeToChanges)
-    .then(_ => connection.char[1].startNotifications())
-    .then(subscribeToChanges)
-    .then(_ => {
-      //console.log("connected to device :"+1 );
-      connection.write=function(v) {
-        const encoder = new TextEncoder('utf-8');
-        const data = encoder.encode(v);
-        connection.char[0].writeValue(data).then(function() {
-        console.log("send :"+data);
-  			}).catch(function(error)  {
-          console.error('send failed!', error);
-  			});
-      }
-    })
-    .then(_ => {
-      //setTime
-      let d = new Date();
-      let tz = d.getTimezoneOffset()/-60
-      connection.write("16="+d.getTime().toString());
-      setTimeout(function() {
-        connection.write("17="+tz);      
-      }, 500);
-      console.log('done');
-    })
-    .catch(error => { console.error(error);elements.status.setValue("");elements.modalBlank.replaceWith(elements.modal);});
-  }
-  function onDisconnected(event) {
-    const device = event.target;
-    //console.log(`Device ${device.name} is disconnected.`);
-    elements.log.log(`Device ${device.name} is disconnected.`);
-    elements.modalBlank.replaceWith(elements.modal);
-    //connect();
-  }
-  function subscribeToChanges(characteristic) {
-      //console.log("sub :",characteristic);
-      characteristic.oncharacteristicvaluechanged = handleData;
-  }
-  //
-  var sandType={1:"betonite",2:"silicone",3:"nonstick",4:"tofu"};
-  var cache={lt:0,dt:-1,au:-1,bs:-1,ps:-1,db:-1,ac:-1,ad:-1,pb:-1,pos:45,cb:-1,pbv:-1,sp:-1,ss:-1,pwr:0,busy:-1};
-  function handleData(event) {
-      // get the data buffer from the meter:
-      var buf = new Uint8Array(event.target.value);
-      const decoder = new TextDecoder();
-      const str = decoder.decode(event.target.value);
-      const id = str.split("=")[0];
-      const val = str.split("=")[1];
-      if (event.target.uuid.startsWith("0000ffa1"))
-        elements.log.log(Date().toString().split(' ')[4]+":"+str);
-      else if (event.target.uuid.startsWith("0000ffa2") ){
-        if (id=="dt") elements[id].setValue(val);
-        else if (id.startsWith("v")) elements[id].setValue(Number(val).toFixed(2)+" V");
-        else if (id=="pp") {
-          cache.pp=val;
-          if (!cache.pwr) elements[id].setValue(Number(val));
-        }
-        else if (id=="pwr") {
-          if (Number(val) && cache.pwr != 1){
-            cache.pwr=1;
-            elements.status.setValue("ON");
-            elements.pp.replaceWith(elements.pos);
-            elements.pos.setValue(cache.pos);
-          } else if (!Number(val) && cache.pwr != 0){
-            cache.pwr=0;
-            elements.status.setValue("IDLE");
-            elements.pos.replaceWith(elements.pp);
-          }
-          elements.pwr.setValue(Number(val));
-        }
-        else if (id=="busy") {
-          if (Number(val) && cache.busy != 1){
-            cache.busy=1;
-            elements.status.setValue("BUSY");
-            elements.he.replaceWith(elements.ps);
-            elements.clean.replaceWith(elements.abort);
-          } else if (!Number(val) && cache.busy != 0){
-            cache.busy=0;
-            elements.status.setValue(120<cache.pp?"ON":"IDLE");
-            elements.ps.replaceWith(elements.he);
-            elements.abort.replaceWith(elements.clean);
-          }
-        }
-        else if (id=="db") return;
-        else { 
-          elements[id].setValue(Number(val));
-          cache[id]=val;
-        }
-      }
-  }
-  // Set up the controls we see on the screen
-   var data = [];
-     for (var i=0;i<100;i++) data.push(Math.cos(i/10));
-  var elements = {
-    //header
-    heading : TD.label({x:0,y:10,width:400,height:60,label:""}),
-    dt:   TD.value({x:5,y:10,width:100,height:40,label:"",value:0}),
-    //right dash
-    pos : TD.gauge({x:0,y:70,width:230,height:220,label:"BALL POSITION",value:0,min:0,max:205}),
-    pp : TD.gauge({x:0,y:70,width:230,height:220,label:"BATTERY PERCENTAGE",value:0,min:0,max:100}),
-    ps: TD.toggle({x:0,y:290,width:230,height:60,label:"PAUSE",value:"0",onchange:function(el,v) { connection.write(80+v);}}),
-    he:   TD.label({x:0,y:290,width:230,height:60,label:""}),
-    //left dash
-    rtod: TD.value({x:230,y:50,width:170,height:55,label:"TODAY",value:"0"}),
-    rtot: TD.value({x:230,y:105,width:170,height:55,label:"TOTAL",value:"0"}),
-    lt: TD.value({x:230,y:160,width:170,height:55,label:"LITRES",value:"0"}),
-    vp: TD.value({x:230,y:215,width:170,height:60,label:"VOLT",value:"0"}),
-    //controller
-    vc:   TD.value({x:230,y:270,width:170,height:80,label:"DSD6",value:0}),
-    //lcd 
-    hb:   TD.label({x:0,y:360,width:400,height:70,label:""}),
-    status: TD.value({x:100,y:360,width:200,height:60,label:"",value:"0"}),
-    //midle
-    heading_more1 : TD.label({x:0,y:440,width:195,height:260,label:""}),
-    heading_more2 : TD.label({x:205,y:440,width:195,height:260,label:""}),
-    //manual clean
-    abort:   TD.button({x:0,y:480,width:195,height:90,color:555,label:"",value:0,name:"button",glyph:"ABORT",onchange:function(el,v) { 
-      if (v) connection.write(18);
-      elements.status.setValue(`ABORTING`);
-    }}), 
-    clean:   TD.button({x:0,y:480,width:195,height:90,color:555,label:"",value:0,name:"button",glyph:"CLEAN",onchange:function(el,v) { 
-      if (v) connection.write(12);
-    }}),   
-    //manual empty
-    em:   TD.button({x:205,y:480,width:195,height:70,label:"",value:0,name:"button",glyph:"EMPTY",onchange:function(el,v) { 
-      if (v) connection.write(13);
-    }}),
-    //settings
-    //auto clean on-off
-    ac:TD.toggle({x:0,y:460,width:195,height:80,label:"AUTO",value:0,name:"Toggle",onchange:function(el,v) { connection.write(70+v);}}),
-    //auto clean delay
-    ad:TD.value({x:0,y:540,width:195,height:80,label:"DELAY",value:"1",min:1,step:1,max:9, onchange:function(el,v) { connection.write(60+v);}}),
-    //uvc light trigger
-    au:TD.toggle({x:0,y:620,width:195,height:80,label:"UVC",value:0,name:"Toggle",onchange:function(el,v) { connection.write(50+v);}}),
-    //patern mode 
-    sp:TD.value({x:205,y:460,width:195,height:80,label:"MODE",value:1,min:1,step:1,max:3,onchange:function(el,v) {
-      elements.pn.setValue(sandType[v]);
-      connection.write(40+v);
-    }}),
-    //patern name
-    pn: TD.value({x:205,y:540,width:195,height:80,label:"",value:"0"}),
-    //patern speed
-    ss:TD.value({x:205,y:620,width:195,height:80,label:"SPEED",value:5,min:1,step:1,max:9, onchange:function(el,v) { connection.write(30+v);}}),
-    //more
-    more1:   TD.label({x:0,y:0,width:0,height:0,label:""}),
-    more2:   TD.label({x:0,y:0,width:0,height:0,label:""}),
-    more3:   TD.label({x:0,y:0,width:0,height:0,label:""}),
-    more4:   TD.label({x:0,y:0,width:0,height:0,label:""}),
-    //on-off
-    pwr:   TD.toggle({x:0,y:580,width:195,height:70,label:"LIGHT",value:0,name:"button",onchange:function(el,v) { 
-        connection.write(11);
-    }}),
-    //footer
-    //set
-    settings:TD.toggle({x:0,y:710,width:195,height:75,label:"SET",value:0,name:"Toggle",onchange:function(el,v) { 
-        if (v==1){
-            elements.pwr.replaceWith(elements.ac); 
-            elements.em.replaceWith(elements.ad); 
-            elements.more1.replaceWith(elements.au); 
-            elements.more2.replaceWith(elements.sp); 
-            elements.more3.replaceWith(elements.pn); 
-            elements.more4.replaceWith(elements.ss); 
-        } else {
-            elements.log.log("Settings Saved");
-            connection.write(19);
-            elements.ac.replaceWith(elements.pwr); 
-            elements.ad.replaceWith(elements.em); 
-            elements.au.replaceWith(elements.more1); 
-            elements.sp.replaceWith(elements.more2); 
-            elements.pn.replaceWith(elements.more3); 
-            elements.ss.replaceWith(elements.more4); 
-        }
-    }}),
-    //log
-    db:TD.toggle({x:205,y:710,width:195,height:75,label:"DBG",value:0,name:"Toggle",onchange:function(el,v) { 
-        if (v){
-            elements.logBlank.replaceWith(elements.log); 
-        } else
-            elements.log.replaceWith(elements.logBlank);
-      }}),
-    log:TD.log({x:0,y:800,width:400,height:400,id:5,label:"Console output",text:"sCat-a"}),
-    logBlank:TD.label({x:1,y:1,width:1,height:1,label:""}),
-    //modal
-    modal: TD.modal({x:0,y:10,width:395,height:460,label:"Click to connect",onchange:connect}),
-    modalBlank: TD.label({x:0,y:0,width:0,height:0,label:""}),
-  }
-  elements.log.log("Version 1.0");
-  for (var i in elements)
-    document.body.appendChild(elements[i]);
-    elements.log.replaceWith(elements.logBlank);
-    elements.ac.replaceWith(elements.pwr); 
-    elements.ad.replaceWith(elements.em); 
-    elements.au.replaceWith(elements.more1); 
-    elements.sp.replaceWith(elements.more2); 
-    elements.pn.replaceWith(elements.more3); 
-    elements.ss.replaceWith(elements.more4);
-    elements.pn.setValue(sandType[1]);
-    elements.status.setValue("");
-  </script>
- </body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8,maximum-scale=0.8, minimum-scale=0.8, shrink-to-fit=no">
+    <link rel="stylesheet" href="Loader/css/spectre1.min.css">
+    <link rel="stylesheet" href="Loader/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="Loader/css/spectre-icons.min.css">
+    <link rel="stylesheet" href="Loader/css/pwa.css">
+    <link rel="stylesheet" href="Loader/css/main.css">
+	  <link rel="stylesheet" href="Loader/css/style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="Loader/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Loader/img/favicon1-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="Loader/img/favicon1-16x16.png">
+    <link rel="manifest" href="Loader/site.webmanifest">
+    <link rel="mask-icon" href="img/safari-pinned-tab.svg" color="#332F2E">
+    <meta name="apple-mobile-web-app-title" content="sCat-a">
+    <meta name="application-name" content="sCat-1">
+    <meta name="msapplication-TileColor" content="#332F2E">
+    <meta name="theme-color" content="#332F2E">
+    <title>sCat-a Loader</title>
+  </head>
+  <body>
+    <header class="navbar-primary navbar">
+      <section class="navbar-section">
+        <a href="https://enaon.github.io/sCat-a" target="_blank" class="navbar-brand mr-2"><img src="Loader/img/favicon1-32x32.png" alt="sCat-a">&nbsp;&nbsp; sCat-a loader</a>
+        <!-- <a href="#" class="btn btn-link">...</a> -->
+      </section>
+      <section class="navbar-section">
+        <button class="btn" id="connectmydevice">Connect</button>
+      </section>
+      <!--<section class="navbar-section">
+        <div class="input-group input-inline">
+          <input class="form-input" type="text" placeholder="search">
+          <button class="btn btn-primary input-group-btn">Search</button>
+        </div>
+      </section>-->
+    </header>
+
+    <div class="container" style="padding-top:4px">
+      <p id="requireHTTPS" class="hidden">
+        <b>STOP!</b> This page <b>must</b> be served over HTTPS. Please <a>reload this page via HTTPS</a>.
+      </p>
+    </div>
+
+
+    <ul class="tab tab-block" id="tab-navigate">
+	 <li class="tab-item active" id="tab-watchcontainer">
+        <a href="javascript:showTab('watchcontainer')">Installer</a>
+      </li>     
+	 <li class="tab-item" id="tab-myappscontainer">
+        <a href="javascript:showTab('myappscontainer')">Installed</a>
+      </li>
+      <li class="tab-item" id="tab-librarycontainer">
+        <a href="javascript:showTab('librarycontainer')">Library</a>
+      </li>
+      <li class="tab-item" id="tab-aboutcontainer">
+        <a href="javascript:showTab('aboutcontainer')">About</a>
+      </li>
+    </ul>
+
+    <div class="container"  id="toastcontainer">
+    </div>
+
+    <div class="container apploader-tab" id="librarycontainer">
+      <div>
+        <div class="filter-nav">
+          <label class="chip active" filterid="">ALL</label>
+        </div>
+        <div class="sort-nav hidden">
+          <span>Sort by:</span>
+          <label class="chip active" sortid="">None</label>
+          <label class="chip" sortid="created">New</label>
+          <label class="chip" sortid="modified">Updated</label>
+        </div>
+      </div>
+
+      <div class="panel" style="clear:both">
+        <div class="panel-header">
+        <div class="input-group" id="searchform">
+            <input class="form-input" type="text" placeholder="Keywords...">
+            <button class="btn btn-primary input-group-btn">Search</button>
+        </div>
+        </div>
+        <div class="panel-body columns"><!-- apps go here --></div>
+      </div>
+    </div>
+
+    <div class="container apploader-tab" id="myappscontainer" style="display:none">
+      <div class="panel">
+        <div class="panel-header" style="text-align:right">
+          <button class="btn refresh">Refresh...</button>
+          <button class="btn btn-primary updateapps hidden">Update X apps</button>
+        </div>
+        <div class="panel-body columns"><!-- apps go here --></div>
+      </div>
+    </div>
+
+
+    <div class="container apploader-tab" id="watchcontainer" style="display:none">
+      <div class="hero bg-dgray">
+        <div class="hero-body">
+          <h4>Installer</h4>
+			<h5>Automated cat litter box </h5>
+			<h6>Select the "Install All Apps" button to start uploading sCat-a scripts to an espruino ready DS-D6 band. </h6>
+
+        </div>
+      </div>
+      <div class="container" style="padding-top: 8px;">
+      	<!--  <h5>Install Actions</h5>-->
+        <p>
+			<button class="btn" id="installall">Install all apps</button>
+        </p>
+       <!--  <h5>Utilities</h5>-->
+        <p>
+        	<!--   <button class="btn" id="settime">Set Time</button>-->
+			<!-- 	<button class="btn" id="restart">Restart Watch</button>-->
+			<!-- <button class="btn" id="settings">Change Settings</button> -->
+			
+        </p>
+      </div>
+    </div>
+
+    <div class="container apploader-tab" id="aboutcontainer" style="display:none">
+      <div class="hero bg-dgray">
+        <div class="hero-body">
+          <h4>App Loader</h4>
+		<p>A tool for uploading apps to <a href="https://espruino.com" target="_blank">Espruino Devices</a></p>
+        <p id="apploaderlinks"></p> <p>Check out <a href="https://github.com/espruino/EspruinoApps" target="_blank">the Source on GitHub.</a>
+		 Using <a href="https://espruino.com/" target="_blank">Espruino.</a></p>
+        </div>
+      </div>
+      <div class="container" style="padding-top: 8px;">
+        <h5>Settings</h5>
+        <div class="form-group">
+          <label class="form-switch">
+            <input type="checkbox" id="settings-pretokenise">
+            <i class="form-icon"></i> Pretokenise apps before upload (smaller, faster apps)
+          </label>
+          <button class="btn" id="defaultsettings">Default settings</button>
+        </div>
+		
+      </div>
+    </div>
+
+    <footer class="floating hidden">
+      <!-- Install button, hidden by default -->
+      <div id="installContainer" class="hidden">
+        <button id="butInstall" type="button">
+          Install
+        </button>
+      </div>
+    </footer>
+    <!--  <	<script src="https://www.puck-js.com/puck.js"></script> -->
+    <script src="Loader/puck.js"></script>  
+    <script src="Loader/core/lib/marked.min.js"></script>
+    <script src="Loader/core/lib/espruinotools.js"></script>
+    <script src="Loader/core/lib/heatshrink.js"></script>
+    <script src="Loader/core/js/utils.js"></script>
+    <script src="app/dsd6loader.js"></script>
+    <script src="Loader/core/js/ui.js"></script>
+    <script src="Loader/core/js/comms.js"></script>
+    <script src="Loader/core/js/appinfo.js"></script>
+    <script src="Loader/core/js/index.js"></script>
+    <script src="Loader/core/js/pwa.js" defer></script>
+  </body>
 </html>
-
-
