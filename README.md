@@ -12,6 +12,9 @@
 5. Failproof safety.
    Besides the logic, is also uses the powerbank module to cut off power in a case of overload, the servo is then released, there is no way to harm a cat.
 
+It runs on espruino.
+https://forum.espruino.com/conversations/392685/
+
 The ball is a flower pot from italian maker Bama:
 https://www.bamagroup.com/en/sfera-pot-with-saucer-sfera.html
 
