@@ -22,6 +22,13 @@ Everything else is cardboard, soaked in thin construction grade resin, filling a
 A how-to with photos can be found on this Greek forum thread:
 https://www.phorum.com.gr/viewtopic.php?f=43&t=50568
 
+The toilet can be updated from a phone/pc using this web Page (is served from this repository)
+https://enaon.github.io/sCat-a/scata.html
+
+The toilet can be controled from a phone/pc using this web page (is served from this repository)
+https://enaon.github.io/sCat-a/index.html
+
+
 Demo video:
 
 
