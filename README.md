@@ -6,7 +6,7 @@
 2. Removable sand scoop part.
    The part that scoops the sand is one hand removable, easy cleaning/maintaining.
 3. Waterproof.
-   It s based on a servo, the battery holds in place using a magnet, can be taken out and everything, including the base, else can be placed under running water.
+   It s based on a servo, the battery holds in place using a magnet, can be taken out and everything else, including the base, can be placed under running water.
 5. Silent mechanism.
    It uses a servo and a stadard 10mm bit and screw, cut at the side for top loading, no squeaking sounds, nothing can get stuck in there.
 6. Failproof safety.
