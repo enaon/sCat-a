@@ -2,7 +2,7 @@
 
 ## Strong points:
 1. Battery powered.
-   It is using an NRF52832, standby on 6x18650 batteries is about a Year. Real life usage with 4 cats allowed for 3 months between charging, 400 clean cycles.
+   It is using an NRF52832, standby on 6x18650 batteries is about a Year. Real life usage with 4 cats allowed for 3 months between charges, ~400 cleaning cycles.
 2. Removable sand scoop part.
    The part that scoops the sand is one hand removable, easy cleaning/maintaining.
 3. Waterproof.
