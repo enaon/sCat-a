@@ -19,19 +19,19 @@ The ball is a flower pot from italian maker Bama:
 https://www.bamagroup.com/en/sfera-pot-with-saucer-sfera.html
 
 Everything else is cardboard, soaked in thin construction grade resin, filling and sanding. 
-A detailed how with photos can be found on this Greek forum thread:
+A how-to with photos can be found on this Greek forum thread:
 https://www.phorum.com.gr/viewtopic.php?f=43&t=50568
 
 Demo video:
 
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/D4g8feknsxU/0.jpg)](http://www.youtube.com/watch?v=D4g8feknsxU "First poop")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/D4g8feknsxU/0.jpg)](http://www.youtube.com/watch?v=D4g8feknsxU "")
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/NsHfjCTPNMw/0.jpg)](http://www.youtube.com/watch?v=NsHfjCTPNMw "First poop")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/NsHfjCTPNMw/0.jpg)](http://www.youtube.com/watch?v=NsHfjCTPNMw "")
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/7z5zREmaqtM/0.jpg)](http://www.youtube.com/watch?v=7z5zREmaqtM "First poop")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/7z5zREmaqtM/0.jpg)](http://www.youtube.com/watch?v=7z5zREmaqtM "")
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/u9RIlObnvNE/0.jpg)](http://www.youtube.com/watch?v=u9RIlObnvNE "First poop")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/u9RIlObnvNE/0.jpg)](http://www.youtube.com/watch?v=u9RIlObnvNE "")
 
 
 
